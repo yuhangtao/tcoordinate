@@ -12,7 +12,6 @@
 using namespace std;
 
 //由直角坐标转换为大地坐标 (输出类型为Coordinate.h中的GC类,输入为CC类)
-
 GC cc2gc(CC a,double semiMajorAxis,double Flattening) 
 {
 	//定义经度，纬度，高变量
@@ -29,8 +28,8 @@ GC cc2gc(CC a,double semiMajorAxis,double Flattening)
 	d = (1 - Flattening) * semiMajorAxis;
 	e2 = 1 - pow(d / semiMajorAxis, 2);
 
-	//计算L
-	l = atan(y / x);
+	//计算L,注意使用atan2，区分不同象限的区别
+	l = atan2(y, x);
 
 	//计算B和卯酉圈半径N,假设b初始为0,定义b2去做对比
 	double b2;
@@ -38,7 +37,7 @@ GC cc2gc(CC a,double semiMajorAxis,double Flattening)
 	b = 0;
 	N = semiMajorAxis / pow(1 - e2 * sin(b) * sin(b), 0.5);
 	b2 = atan((z + N * e2 * sin(b)) / pow(x * x + y * y, 0.5));
-	while (fabs(b - b2) >=0.0000001)
+	while (fabs(b - b2) >=0.0000000000000000001)
 	{
 		b = b2;
 		N = semiMajorAxis / pow(1 - e2 * sin(b) * sin(b), 0.5);
@@ -71,6 +70,7 @@ CC gc2cc(GC a, double semiMajorAxis, double Flattening)
 	d = (1 - Flattening) * semiMajorAxis;
 	e2 = 1 - pow(d / semiMajorAxis, 2);
 	N = semiMajorAxis / pow(1 - e2 * pow(sin(b), 2), 0.5);
+
 
 	//计算并赋值x,y,z
 	x = (N + h) * cos(b) * cos(l);
@@ -129,7 +129,7 @@ int main()
 	Flattening = 1 / 298.257223563;
 
 	//验证
-	CC a(200000.0, 200000.0, 200000.0);
+	CC a(-2686431.025393, 4292457.822543, 3864951.768393);
 	GC b = cc2gc(a, semiMajorAxis, Flattening);
 	CC c = gc2cc(b, semiMajorAxis, Flattening);
 	cout << c.x << endl;

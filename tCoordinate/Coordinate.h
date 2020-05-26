@@ -25,6 +25,7 @@ public:
 	double x;
 	double y;
 	double z;
+	
 
 	CC(double xs, double ys, double zs)
 	{
@@ -32,6 +33,7 @@ public:
 		x = xs;
 		y = ys;
 		z = zs;
+		
 	}
 
 };
